@@ -11,7 +11,6 @@ exports.login = async (req, res) => {
   try {
     const email = req.body.email;
     const password = req.body.password;
-    console.log("test");
     const scheme = joi.object({
       email: joi.string().email({ tlds: { allow: false } }),
       password: joi.string().min(6).required(),
@@ -65,7 +64,7 @@ exports.register = async (req, res) => {
 
     await User.create(newData);
 
-    res.status(201).json({ data: newData, message: "User Created..." });
+    res.status(201).json({ message: "User Created..." });
   } catch (error) {
     return handleServerError(res);
   }
