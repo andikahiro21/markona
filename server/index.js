@@ -4,6 +4,7 @@ const app = express();
 const routes = require("./routes/index.js");
 const PORT = 3000;
 const path = require("path");
+const midtransClient = require("midtrans-client");
 
 require("dotenv").config();
 
@@ -12,6 +13,14 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static("public"));
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+let snap = new midtransClient.Snap({
+  isProduction: false,
+  serverKey: process.env.MIDTRANS_SERVER_KEY,
+});
+app.use((req, res, next) => {
+  req.snap = snap;
+  next();
+});
 
 app.use("/api", routes);
 
