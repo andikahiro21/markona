@@ -1,0 +1,122 @@
+@import '@styles/base';
+
+.forgotContainer {
+  @include directionX;
+  justify-content: center;
+  align-items: center;
+  height: 90vh;
+  background-image: url('../../static/images/backgroundLogin.png');
+  .error {
+    font-size: 15px;
+    color: $color-light-red;
+  }
+  .errorForgot {
+    font-size: 20px;
+    color: $color-white;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    background-color: $color-dark-red;
+  }
+  .card {
+    width: 30%;
+    height: 60%;
+    background-color: $color-white;
+    border-radius: 20px;
+    position: relative;
+    .logo {
+      position: absolute;
+      background-color: $color-cream;
+      filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
+      border-radius: 50%;
+      width: 30%;
+      height: 35%;
+      left: 35%;
+      top: -15%;
+      img {
+        width: 100%;
+      }
+    }
+    .title {
+      padding-top: 18%;
+      font-size: 32px;
+      font-weight: 600;
+      display: flex;
+      justify-content: center;
+      letter-spacing: 2px;
+    }
+    .form {
+      padding-top: 8%;
+      form {
+        .email {
+          @include directionY;
+          padding-left: 5%;
+          label {
+            font-weight: 600;
+            font-size: 24px;
+          }
+          input {
+            width: 85%;
+            height: 40px;
+            border-radius: 5px;
+            border: 0.5px solid $color-dark-blue;
+            outline: none;
+            padding-left: 3%;
+          }
+          input:focus {
+            border: 2px solid $color-dark-blue;
+          }
+        }
+        .password {
+          @include directionY;
+          padding-left: 5%;
+          padding-top: 4%;
+          label {
+            font-weight: 600;
+            font-size: 24px;
+          }
+          input {
+            width: 85%;
+            height: 40px;
+            border-radius: 5px;
+            border: 0.5px solid $color-dark-blue;
+            outline: none;
+            padding-left: 3%;
+          }
+          input:focus {
+            border: 2px solid $color-dark-blue;
+          }
+        }
+        .forgotPassword {
+          @include directionX;
+          justify-content: end;
+          padding-right: 11%;
+          padding-top: 4%;
+          a {
+            text-decoration: none;
+            color: $color-black;
+            font-size: 14px;
+          }
+        }
+        .buttonContainer {
+          @include directionX;
+          justify-content: center;
+          padding-top: 6%;
+          button {
+            width: 40%;
+            height: 45px;
+            border-radius: 10px;
+            border: none;
+            outline: none;
+            background-color: $color-dark-red;
+            color: $color-white;
+            cursor: pointer;
+          }
+          button:hover {
+            filter: brightness(120%);
+          }
+        }
+      }
+    }
+  }
+}

@@ -3,16 +3,23 @@ import { useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+
+import logoNav from '@static/images/logoNav.png';
+import ProfileIcon from '@static/images/profile.svg';
+
 import Avatar from '@mui/material/Avatar';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import LightModeIcon from '@mui/icons-material/LightMode';
 import NightsStayIcon from '@mui/icons-material/NightsStay';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import Logout from '@mui/icons-material/Logout';
 
 import { setLocale, setTheme } from '@containers/App/actions';
 
 import classes from './style.module.scss';
+import { setLogin, setToken } from '@containers/Client/actions';
 
 const Navbar = ({ title, locale, theme }) => {
   const dispatch = useDispatch();
@@ -29,7 +36,23 @@ const Navbar = ({ title, locale, theme }) => {
   };
 
   const handleTheme = () => {
-    dispatch(setTheme(theme === 'light' ? 'dark' : 'light'));
+    dispatch(setTheme(theme === 'light'));
+  };
+
+  const [anchorEl, setAnchorEl] = useState(null);
+  const opened = Boolean(anchorEl);
+  const handleClickProfile = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleCloseProfile = () => {
+    setAnchorEl(null);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('user');
+    dispatch(setLogin(false));
+    dispatch(setToken(null));
+    window.location.href = '/login';
   };
 
   const onSelectLang = (lang) => {
@@ -42,18 +65,79 @@ const Navbar = ({ title, locale, theme }) => {
   const goHome = () => {
     navigate('/');
   };
-
+  const clientData = localStorage.getItem('persist:client');
+  const parsedData = JSON.parse(clientData);
+  const isProfileDataAvailable = parsedData && parsedData.token !== 'null';
   return (
     <div className={classes.headerWrapper} data-testid="navbar">
       <div className={classes.contentWrapper}>
         <div className={classes.logoImage} onClick={goHome}>
-          <img src="/vite.svg" alt="logo" className={classes.logo} />
+          <img src={logoNav} alt="logo" className={classes.logo} />
           <div className={classes.title}>{title}</div>
         </div>
         <div className={classes.toolbar}>
-          <div className={classes.theme} onClick={handleTheme} data-testid="toggleTheme">
-            {theme === 'light' ? <NightsStayIcon /> : <LightModeIcon />}
-          </div>
+          {isProfileDataAvailable ? (
+            <>
+              <img src={ProfileIcon} className={classes.profileIcon} alt="icon" onClick={handleClickProfile} />
+              <Menu
+                anchorEl={anchorEl}
+                id="account-menu"
+                open={opened}
+                onClose={handleCloseProfile}
+                onClick={handleCloseProfile}
+                PaperProps={{
+                  elevation: 0,
+                  sx: {
+                    overflow: 'visible',
+                    filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
+                    mt: 1.5,
+                    '& .MuiAvatar-root': {
+                      width: 32,
+                      height: 32,
+                      ml: -0.5,
+                      mr: 1,
+                    },
+                    '&:before': {
+                      content: '""',
+                      display: 'block',
+                      position: 'absolute',
+                      top: 0,
+                      right: 14,
+                      width: 10,
+                      height: 10,
+                      bgcolor: 'background.paper',
+                      transform: 'translateY(-50%) rotate(45deg)',
+                      zIndex: 0,
+                    },
+                  },
+                }}
+                transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+                anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+              >
+                <MenuItem onClick={handleLogout}>
+                  <ListItemIcon>
+                    <Logout fontSize="small" />
+                  </ListItemIcon>
+                  Logout
+                </MenuItem>
+              </Menu>
+            </>
+          ) : (
+            <div className={classes.buttonContainer}>
+              <a href="/login">
+                <div className={classes.loginButton}>
+                  <FormattedMessage id="app_login_title" />
+                </div>
+              </a>
+
+              <a href="/register">
+                <div className={classes.registerButton}>
+                  <FormattedMessage id="app_register_title" />
+                </div>
+              </a>
+            </div>
+          )}
+
           <div className={classes.toggle} onClick={handleClick}>
             <Avatar className={classes.avatar} src={locale === 'id' ? '/id.png' : '/en.png'} />
             <div className={classes.lang}>{locale}</div>

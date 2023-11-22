@@ -5,6 +5,10 @@ import clientReducer, { storedKey as storedClientState } from '@containers/Clien
 import languageReducer from '@containers/Language/reducer';
 
 import { mapWithPersistor } from './persistence';
+import loginReducer from '@pages/Login/reducer';
+import registerReducer from '@pages/Register/reducer';
+import forgotReducer from '@pages/ForgotPassword/reducer';
+import resetReducer from '@pages/ResetPassword/reducer';
 
 const storedReducers = {
   app: { reducer: appReducer, whitelist: storedAppState },
@@ -13,6 +17,10 @@ const storedReducers = {
 
 const temporaryReducers = {
   language: languageReducer,
+  login: loginReducer,
+  register: registerReducer,
+  forgotPassword: forgotReducer,
+  resetPassword: resetReducer,
 };
 
 const createReducer = () => {

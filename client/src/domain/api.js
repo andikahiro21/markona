@@ -3,13 +3,11 @@ import { merge } from 'lodash';
 
 import request from '@utils/request';
 
-const urls = {
-  ping: 'ping.json',
-};
+const urls = {};
 
 export const callAPI = async (endpoint, method, header = {}, params = {}, data = {}) => {
   const defaultHeader = {
-    'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+    'Content-Type': 'application/json',
   };
 
   const headers = merge(defaultHeader, header);
@@ -21,10 +19,15 @@ export const callAPI = async (endpoint, method, header = {}, params = {}, data =
     params,
   };
 
-  return request(options).then((response) => {
-    const responseAPI = response.data;
-    return responseAPI;
-  });
+  try {
+    const response = await request(options);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
 };
 
-export const ping = () => callAPI(urls.ping, 'get');
+export const login = (data) => callAPI('/login', 'POST', {}, {}, data);
+export const register = (data) => callAPI('/register', 'POST', {}, {}, data);
+export const forgotPassword = (data) => callAPI('/forgot-password', 'POST', {}, {}, data);
+export const resetPassword = (token, data) => callAPI(`/reset-password/${token}`, 'PUT', {}, {}, data);

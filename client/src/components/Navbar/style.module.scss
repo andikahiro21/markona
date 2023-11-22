@@ -20,9 +20,10 @@
       align-items: center;
 
       .logo {
-        width: 1.5rem;
-        height: 1.5rem;
+        width: 2rem;
+        height: 2rem;
         margin-right: 0.5rem;
+        padding: 0;
       }
       .title {
         font-weight: 700;
@@ -31,6 +32,46 @@
 
     .toolbar {
       @include directionX;
+      gap: 20px;
+      .profileIcon {
+        width: 35px;
+        cursor: pointer;
+      }
+      .buttonContainer {
+        @include directionX;
+
+        a {
+          color: $color-white;
+          text-decoration: none;
+          font-size: 18px;
+          .loginButton {
+            background-color: $color-dark-red;
+            padding: 5px 25px 5px 25px;
+            border-radius: 10px;
+            margin-right: 10px;
+            cursor: pointer;
+          }
+          .loginButton:hover {
+            filter: brightness(120%);
+          }
+        }
+
+        a {
+          color: $color-white;
+          text-decoration: none;
+          font-size: 18px;
+          .registerButton {
+            background-color: $color-dark-red;
+            padding: 5px 15px 5px 15px;
+            border-radius: 10px;
+            cursor: pointer;
+          }
+          .registerButton:hover {
+            filter: brightness(120%);
+          }
+        }
+      }
+
       .theme {
         @include directionX;
         align-items: center;
