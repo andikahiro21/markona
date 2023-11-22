@@ -13,7 +13,7 @@ const sendForgotPasswordEmail = (to, resetToken) => {
     from: "hiroandika@gmail.com",
     to,
     subject: "Reset Password",
-    text: `Your New Passsword: http://localhost:3000/api/reset-password/${resetToken}`,
+    text: `Your New Passsword: http://localhost:5173/reset-password/${resetToken}`,
   };
 
   transporter.sendMail(mailOptions, (err, info) => {

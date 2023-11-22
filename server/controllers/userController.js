@@ -6,6 +6,7 @@ const { generateToken, generateTokenReset } = require("../utils/generateToken");
 const { authenticateAdmin } = require("../middleware/authenticateAdmin");
 const sendForgotPasswordEmail = require("../helpers/nodemailer");
 const jwt = require("jsonwebtoken");
+var zlib = require("zlib");
 
 exports.login = async (req, res) => {
   try {
@@ -87,10 +88,9 @@ exports.forgotPassword = async (req, res) => {
     }
 
     const token = generateTokenReset(user);
-
     sendForgotPasswordEmail(email, token);
 
-    res.status(200).json({ data: token, message: "Success" });
+    res.status(200).json({ message: "Success" });
   } catch (error) {
     console.log(error);
     return handleServerError(res);
@@ -110,8 +110,17 @@ exports.resetPassword = async (req, res) => {
       return handleClientError(res, 400, error.details[0].message);
     }
 
-    const { token } = req.params;
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    let { token } = req.params;
+    token = token.replace(/_/g, "/");
+    token = Buffer.from(token, "base64");
+
+    let decompressedToken;
+    try {
+      decompressedToken = zlib.inflateSync(token).toString();
+    } catch (decompressionError) {
+      return handleClientError(res, 400, "Invalid token format");
+    }
+    const decoded = jwt.verify(decompressedToken, process.env.JWT_SECRET);
 
     const hashingPassword = hash(newPassword);
     const hashedPassword = hashingPassword;

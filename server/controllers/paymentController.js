@@ -14,7 +14,7 @@ exports.createPurchase = async (req, res) => {
     const newData = req.body;
     let total = 0;
     const scheme = joi.object({
-      note: joi.string(),
+      note: joi.string().allow(""),
       menuIDs: joi.array().min(1).required(),
       qtys: joi.array().min(1).required(),
     });
