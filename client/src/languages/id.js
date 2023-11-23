@@ -28,4 +28,9 @@ export default {
   app_reset_password: 'Kata Sandi Baru',
   app_reset_confirm_password: 'Konfirmasi Kata Sandi',
   app_reset_button: 'Kirim',
+
+  app_basket_button: 'Bayar',
+  app_basket_title: 'Keranjang',
+
+  app_order_title: 'Pesanan',
 };

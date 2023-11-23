@@ -1,14 +1,52 @@
 const { handleServerError, handleClientError } = require("../helpers/handleError");
-const { Menu, Purchase } = require("../models");
+const { Menu, Purchase, Purchase_Group } = require("../models");
 const joi = require("joi");
 const fs = require("fs");
 const path = require("path");
+const jwt = require("jsonwebtoken");
 
 exports.getMenu = async (req, res) => {
   try {
     const response = await Menu.findAll();
     res.status(200).json({ data: response, message: "Success" });
   } catch (error) {
+    return handleServerError(res);
+  }
+};
+
+exports.getPurchaseMenu = async (req, res) => {
+  try {
+    const token = req.headers.authorization.split(" ")[1];
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+    const response = await Purchase_Group.findAll({
+      include: [
+        {
+          model: Purchase,
+        },
+      ],
+      where: { userID: decoded.data.id },
+    });
+    res.status(200.0).json({ data: response, message: "Success" });
+  } catch (error) {
+    console.error(error);
+    return handleServerError(res);
+  }
+};
+
+exports.getPurchaseMenu = async (req, res) => {
+  try {
+    const response = await Purchase_Group.findAll({
+      include: [
+        {
+          model: Purchase,
+        },
+      ],
+      where: { userID: decoded.data.id },
+    });
+    res.status(200.0).json({ data: response, message: "Success" });
+  } catch (error) {
+    console.error(error);
     return handleServerError(res);
   }
 };

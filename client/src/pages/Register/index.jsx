@@ -27,7 +27,6 @@ const Register = () => {
   const isLoggedIn = useSelector(selectLogin);
   const registerError = useSelector(selectRegisterError);
 
-  console.log(registerError);
   const {
     control,
     handleSubmit,

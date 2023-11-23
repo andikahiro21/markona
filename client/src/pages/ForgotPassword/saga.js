@@ -23,7 +23,6 @@ function* forgotPassword(action) {
     const response = yield call(forgotApi, action.payload);
     yield call(forgotSuccess());
   } catch (e) {
-    console.log(e.response.data.message);
     yield put(forgotFailure(e.response.data.message));
   } finally {
     yield put(setLoading(false));

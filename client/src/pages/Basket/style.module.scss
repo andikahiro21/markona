@@ -1,16 +1,9 @@
 @import '@styles/base';
 
-.home {
-  background-color: white;
-  .categoryContainer {
-    @include directionX;
-    .category {
-      font-size: 18px;
-    }
-  }
+.basket {
+  background-color: $color-white;
   .product {
     padding-top: 10px;
-    margin-bottom: 4%;
     .categoryTitle {
       font-size: 24px;
       font-weight: 600;
@@ -64,44 +57,81 @@
         .actionCard {
           position: relative;
           width: 10%;
-          button {
-            background-color: $color-black;
-            color: $color-white;
-            width: 30px;
-            height: 30px;
-            font-size: 24px;
-            border-radius: 50%;
-            outline: none;
-            border: none;
+          .btnCont {
+            @include directionX;
+            gap: 20px;
             position: absolute;
             bottom: 20px;
             right: 30px;
-            cursor: pointer;
+            button {
+              background-color: $color-black;
+              color: $color-white;
+              width: 30px;
+              height: 30px;
+              font-size: 24px;
+              border-radius: 50%;
+              outline: none;
+              border: none;
+              cursor: pointer;
+            }
           }
         }
       }
     }
   }
-  .basketCont {
-    margin-top: 2%;
-    width: 100%;
-    position: fixed;
-    top: 90%;
-    a {
+  .note {
+    @include directionX;
+    align-items: center;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    padding-left: 2%;
+    .title {
       @include directionX;
-      text-decoration: none;
-      justify-content: center;
-      width: 100%;
-      .basket {
-        @include directionX;
-        gap: 3%;
-        justify-content: center;
-        align-items: center;
-        height: 50px;
-        background-color: $color-dark-red;
-        width: 90%;
-        border-radius: 10px;
+      justify-content: end;
+      padding-right: 30px;
+      width: 20%;
+      .text {
+        font-size: 18px;
+        font-weight: 600;
+      }
+    }
+    .inputCont {
+      width: 95%;
+      padding-left: 1%;
+      input {
+        width: 95%;
+        height: 40px;
+        border-radius: 5px;
+        border: 1px solid rgba(0, 0, 0, 0.5);
+        outline: none;
+        padding-left: 2%;
+      }
+    }
+  }
+  .paySum {
+    @include directionX;
+    align-items: center;
+    width: 100%;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    .total {
+      @include directionX;
+      justify-content: end;
+      padding-right: 30px;
+      width: 70%;
+      .text {
+        font-size: 18px;
+        font-weight: 600;
+      }
+    }
+    .btnCont {
+      width: 30%;
+      button {
+        width: 120px;
+        height: 40px;
+        border-radius: 5px;
+        background-color: $color-light-red;
         color: $color-white;
+        outline: none;
+        border: none;
       }
     }
   }

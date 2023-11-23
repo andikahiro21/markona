@@ -15,6 +15,7 @@ import LightModeIcon from '@mui/icons-material/LightMode';
 import NightsStayIcon from '@mui/icons-material/NightsStay';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import Logout from '@mui/icons-material/Logout';
+import ReceiptIcon from '@mui/icons-material/Receipt';
 
 import { setLocale, setTheme } from '@containers/App/actions';
 
@@ -49,10 +50,13 @@ const Navbar = ({ title, locale, theme }) => {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('user');
     dispatch(setLogin(false));
     dispatch(setToken(null));
     window.location.href = '/login';
+  };
+
+  const handleOrder = () => {
+    window.location.href = '/order';
   };
 
   const onSelectLang = (lang) => {
@@ -114,6 +118,12 @@ const Navbar = ({ title, locale, theme }) => {
                 transformOrigin={{ horizontal: 'right', vertical: 'top' }}
                 anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
               >
+                <MenuItem onClick={handleOrder}>
+                  <ListItemIcon>
+                    <ReceiptIcon fontSize="small" />
+                  </ListItemIcon>
+                  Order
+                </MenuItem>
                 <MenuItem onClick={handleLogout}>
                   <ListItemIcon>
                     <Logout fontSize="small" />

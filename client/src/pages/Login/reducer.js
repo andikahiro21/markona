@@ -6,8 +6,6 @@ export const initialState = {
   loginError: '',
 };
 
-export const storedKey = ['token', 'login'];
-
 const loginReducer = (state = initialState, action) =>
   produce(state, (draft) => {
     switch (action.type) {

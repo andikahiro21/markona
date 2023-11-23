@@ -28,4 +28,9 @@ export default {
   app_reset_password: 'New Password',
   app_reset_confirm_password: 'Confirm Password',
   app_reset_button: 'Send',
+
+  app_basket_button: 'Pay',
+  app_basket_title: 'Basket',
+
+  app_order_title: 'Order',
 };

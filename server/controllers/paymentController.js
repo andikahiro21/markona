@@ -4,7 +4,7 @@ const joi = require("joi");
 const fs = require("fs");
 const path = require("path");
 const jwt = require("jsonwebtoken");
-const { decode } = require("punycode");
+const moment = require("moment-timezone");
 
 exports.createPurchase = async (req, res) => {
   try {
@@ -14,17 +14,25 @@ exports.createPurchase = async (req, res) => {
     const newData = req.body;
     let total = 0;
     const scheme = joi.object({
+      items: joi
+        .array()
+        .items(
+          joi.object({
+            menuIDs: joi.number().required(),
+            qtys: joi.number().required(),
+          })
+        )
+        .min(1)
+        .required(),
       note: joi.string().allow(""),
-      menuIDs: joi.array().min(1).required(),
-      qtys: joi.array().min(1).required(),
     });
 
     const { error } = scheme.validate(newData);
     if (error) {
       return handleClientError(res, 400, error.details[0].message);
     }
-    const menuIDs = newData.menuIDs;
-    const qtys = newData.qtys;
+    const menuIDs = newData.items.map((item) => item.menuIDs);
+    const qtys = newData.items.map((item) => item.qtys);
 
     if (menuIDs.length !== qtys.length) {
       return handleClientError(res, 400, "Menu IDs and quantities must have the same number of elements.");
@@ -52,13 +60,16 @@ exports.createPurchase = async (req, res) => {
 
       total += menu.price * qty;
     }
-
+    function addHoursToDate(date, hours) {
+      return new Date(date.getTime() + hours * 60 * 60 * 1000);
+    }
+    const nowDate = moment().tz("Asia/Jakarta").format("YYYY-MM-DD HH:mm:ss");
     const paymentData = {
       userID: decoded.data.id,
       total: total,
       method: "Pending",
       status: "Pending",
-      date: new Date(),
+      date: addHoursToDate(new Date(nowDate), 7).toISOString(),
     };
     let newPayment = await Payment.create(paymentData);
 
@@ -68,11 +79,10 @@ exports.createPurchase = async (req, res) => {
       username: decoded.data.fullName,
       note: newData.note,
       status: "Pending Payment",
-      date: Date.now(),
+      date: addHoursToDate(new Date(nowDate), 7).toISOString(),
     };
 
     const newPurchaseGroup = await Purchase_Group.create(purchaseGroupData);
-
     const payload = {
       total: total,
       purchaseGroupData: newPurchaseGroup,
@@ -138,17 +148,21 @@ exports.notificationMidtrans = async (req, res) => {
   try {
     const payloadToken = req.headers["token"];
     const decoded = jwt.verify(payloadToken, process.env.JWT_SECRET);
+    function addHoursToDate(date, hours) {
+      return new Date(date.getTime() + hours * 60 * 60 * 1000);
+    }
+    const nowDate = moment().tz("Asia/Jakarta").format("YYYY-MM-DD HH:mm:ss");
     const notification = {
       purchaseGroupID: decoded.purchaseGroupData.id,
       order_id: decoded.purchaseGroupData.paymentID,
       transaction_status: "settlement",
       gross_amount: decoded.total,
       payment_type: "bank_transfer",
-      transaction_time: Date.now(),
+      transaction_time: addHoursToDate(new Date(nowDate), 7).toISOString(),
     };
 
     if (notification.transaction_status === "settlement") {
-      await Payment.update({ status: "Success", method: notification.payment_type }, { where: { id: notification.order_id } });
+      await Payment.update({ status: "Success", date: notification.transaction_time, method: notification.payment_type }, { where: { id: notification.order_id } });
       await Purchase_Group.update({ status: "Order Receive" }, { where: { id: notification.purchaseGroupID } });
 
       res.status(201).json({

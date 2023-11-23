@@ -1,9 +1,12 @@
 import MainLayout from '@layouts/MainLayout';
+import Basket from '@pages/Basket';
 
 import ForgotPassword from '@pages/ForgotPassword';
 import Home from '@pages/Home';
 import Login from '@pages/Login';
+import ManageOrder from '@pages/ManageOrder';
 import NotFound from '@pages/NotFound';
+import Order from '@pages/Order';
 import Register from '@pages/Register';
 import ResetPassword from '@pages/ResetPassword';
 
@@ -41,6 +44,27 @@ const routes = [
     name: 'ResetPassword',
     protected: false,
     component: ResetPassword,
+    layout: MainLayout,
+  },
+  {
+    path: '/basket',
+    name: 'Basket',
+    protected: true,
+    component: Basket,
+    layout: MainLayout,
+  },
+  {
+    path: '/order',
+    name: 'Order',
+    protected: true,
+    component: Order,
+    layout: MainLayout,
+  },
+  {
+    path: '/manage-order',
+    name: 'ManageOrder',
+    protected: true,
+    component: ManageOrder,
     layout: MainLayout,
   },
   { path: '*', name: 'Not Found', component: NotFound, layout: MainLayout, protected: false },

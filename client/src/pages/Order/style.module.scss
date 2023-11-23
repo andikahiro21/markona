@@ -1,0 +1,106 @@
+@import '@styles/base';
+
+.order {
+  .product {
+    padding-top: 10px;
+
+    .categoryTitle {
+      font-size: 32px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      padding-left: 2%;
+    }
+    .cardCont {
+      @include directionX;
+      justify-content: center;
+      .container {
+        width: 95%;
+        .card {
+          position: relative;
+          margin-top: 1%;
+          width: 100%;
+          height: 120px;
+          background-color: $color-white;
+          border-radius: 10px;
+          .header {
+            @include directionX;
+            align-items: center;
+            margin-left: 10px;
+            height: 100%;
+            img {
+              width: 50px;
+              height: 50px;
+            }
+            .title {
+              margin-left: 20px;
+              .comp {
+                font-size: 24px;
+              }
+              .date {
+                font-size: 15px;
+                color: $color-grey;
+              }
+            }
+            .orderMenu {
+              @include directionY;
+              font-size: 14px;
+              margin-left: 5%;
+              width: 200px;
+              gap: 10px;
+              height: 90%;
+              overflow-y: scroll;
+              padding-right: 30px;
+            }
+            .orderMenu::-webkit-scrollbar {
+              width: 8px;
+            }
+
+            .orderMenu::-webkit-scrollbar-track {
+              background-color: #e4e4e4;
+              border-radius: 100px;
+            }
+
+            .orderMenu::-webkit-scrollbar-thumb {
+              border-radius: 100px;
+              background-image: linear-gradient(180deg, $color-dark-red 0%, $color-dark-red);
+            }
+            .note {
+              font-size: 14px;
+              margin-left: 5%;
+            }
+            .statusP {
+              font-size: 24px;
+              margin-left: 1%;
+              background-color: $color-light-red;
+              padding: 15px;
+              border-radius: 20px;
+              position: absolute;
+              right: 3%;
+              color: $color-white;
+            }
+            .statusR {
+              font-size: 24px;
+              margin-left: 1%;
+              background-color: $color-yellow;
+              padding: 15px;
+              border-radius: 20px;
+              position: absolute;
+              right: 3%;
+              color: $color-white;
+            }
+            .statusS {
+              font-size: 24px;
+              margin-left: 1%;
+              background-color: $color-green;
+              padding: 15px;
+              border-radius: 20px;
+              position: absolute;
+              right: 3%;
+              color: $color-white;
+            }
+          }
+        }
+      }
+    }
+  }
+}
