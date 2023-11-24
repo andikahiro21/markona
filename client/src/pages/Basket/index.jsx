@@ -10,17 +10,31 @@ import { setBasket, setPaymentRequest } from './actions';
 import { selectToken } from '@containers/Client/selectors';
 import { logoutUser } from '@containers/Client/actions';
 import { selectError } from './selectors';
+import { jwtDecode } from 'jwt-decode';
+import { useNavigate } from 'react-router-dom';
 
 const Basket = ({ token, basketError }) => {
+  const Navigate = useNavigate();
   const [note, setNote] = useState('');
   const dispatch = useDispatch();
   let basketData = localStorage.getItem('persist:basket');
   let basket = [];
+  const userData = localStorage.getItem('persist:client');
+  const parsedUserData = JSON.parse(userData);
+  const userToken = parsedUserData.token;
+  let decoded = null;
 
   useEffect(() => {
     if (basketError == 'Token Expired...' || basketError == 'No token provided') {
       dispatch(logoutUser());
       window.location.href = '/login';
+    }
+
+    if (userToken) {
+      decoded = jwtDecode(userToken);
+      if (decoded.data.role == 1) {
+        Navigate('/');
+      }
     }
   }, [token]);
 

@@ -6,10 +6,14 @@ import { FormattedMessage } from 'react-intl';
 import Swal from 'sweetalert2';
 
 import style from './style.module.scss';
-import { getAllMenus } from './actions';
+import { deleteMenu, getAllMenus } from './actions';
 import { selectMenus } from './selectors';
 import { setBasket } from '@pages/Basket/actions';
 import { selectBaskets } from '@pages/Basket/selectors';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
+
+import { jwtDecode } from 'jwt-decode';
 
 const Home = ({ menus, baskets }) => {
   const errorAdd = () => {
@@ -51,7 +55,17 @@ const Home = ({ menus, baskets }) => {
     };
     dispatch(setBasket([...basketItems, newItem]));
   };
+  const handleDelete = (id) => {
+    dispatch(deleteMenu(id));
+  };
 
+  const userData = localStorage.getItem('persist:client');
+  const parsedUserData = JSON.parse(userData);
+  const token = parsedUserData.token;
+  let decoded = null;
+  if (token) {
+    decoded = jwtDecode(token);
+  }
   return (
     <div className={style.home}>
       <div className={style.product}>
@@ -71,10 +85,27 @@ const Home = ({ menus, baskets }) => {
                           <div className={style.title}>{menu.name}</div>
                           <div className={style.desc}>{menu.description}</div>
                         </div>
-                        <div className={style.price}>{menu.price}</div>
+                        <div className={style.price}>Rp {menu.price}</div>
                       </div>
                       <div className={style.actionCard}>
-                        <button onClick={() => handleAddToBasket(menu)}>+</button>
+                        {decoded && decoded.data.role !== 1 && (
+                          <button className={style.btnBasket} onClick={() => handleAddToBasket(menu)}>
+                            +
+                          </button>
+                        )}
+                        {decoded && decoded.data.role === 1 && (
+                          <div className={style.adminBtn}>
+                            <a href={`/edit-menu/${menu.id}`}>
+                              <button className={style.btnEdit}>
+                                <EditIcon sx={{ fontSize: 20 }} />
+                              </button>
+                            </a>
+
+                            <button onClick={() => handleDelete(menu.id)} className={style.btnDelete}>
+                              <DeleteIcon sx={{ fontSize: 20 }} />
+                            </button>
+                          </div>
+                        )}
                       </div>
                     </div>
                   </div>

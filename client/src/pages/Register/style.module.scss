@@ -19,34 +19,50 @@
     background-color: $color-dark-red;
   }
   .card {
-    width: 30%;
-    height: 80%;
-    background-color: $color-white;
-    border-radius: 20px;
-    position: relative;
+    @include apply-at-xs-size {
+      width: 95%;
+      height: 80%;
+      background-color: $color-white;
+      border-radius: 20px;
+      position: relative;
+    }
+    @include apply-at-xl-size {
+      width: 30%;
+    }
+
     .logo {
-      position: absolute;
-      background-color: $color-cream;
-      filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
-      border-radius: 50%;
-      width: 28%;
-      height: 25%;
-      left: 35%;
-      top: -10%;
+      @include apply-at-xs-size {
+        display: none;
+      }
+      @include apply-at-xl-size {
+        display: block;
+        position: absolute;
+        background-color: $color-cream;
+        filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
+        border-radius: 50%;
+        width: 28%;
+        height: 25%;
+        left: 35%;
+        top: -10%;
+      }
       img {
         width: 100%;
       }
     }
     .title {
-      padding-top: 18%;
+      padding-top: 50px;
       font-size: 32px;
       font-weight: 600;
       display: flex;
       justify-content: center;
       letter-spacing: 2px;
+
+      @include apply-at-xl-size {
+        padding-top: 90px;
+      }
     }
     .form {
-      padding-top: 3%;
+      padding-top: 30px;
       form {
         .formContainer {
           @include directionX;
@@ -57,7 +73,10 @@
               padding-left: 5%;
               label {
                 font-weight: 600;
-                font-size: 24px;
+                font-size: 18px;
+                @include apply-at-xl-size {
+                  font-size: 24px;
+                }
               }
               input {
                 width: 85%;
@@ -74,10 +93,14 @@
             .phoneNumber {
               @include directionY;
               padding-left: 5%;
-              padding-top: 10%;
+              padding-top: 20px;
+
               label {
                 font-weight: 600;
-                font-size: 24px;
+                font-size: 18px;
+                @include apply-at-xl-size {
+                  font-size: 24px;
+                }
               }
               input {
                 width: 85%;
@@ -99,7 +122,10 @@
               padding-left: 5%;
               label {
                 font-weight: 600;
-                font-size: 24px;
+                font-size: 18px;
+                @include apply-at-xl-size {
+                  font-size: 24px;
+                }
               }
               input {
                 width: 85%;
@@ -116,10 +142,13 @@
             .password {
               @include directionY;
               padding-left: 5%;
-              padding-top: 10%;
+              padding-top: 20px;
               label {
                 font-weight: 600;
-                font-size: 24px;
+                font-size: 18px;
+                @include apply-at-xl-size {
+                  font-size: 24px;
+                }
               }
               input {
                 width: 85%;
@@ -140,7 +169,7 @@
           @include directionX;
           justify-content: end;
           padding-right: 11%;
-          padding-top: 4%;
+          padding-top: 20px;
           a {
             text-decoration: none;
             color: $color-black;
@@ -150,7 +179,8 @@
         .buttonContainer {
           @include directionX;
           justify-content: center;
-          padding-top: 6%;
+          padding-top: 20px;
+
           button {
             width: 40%;
             height: 45px;

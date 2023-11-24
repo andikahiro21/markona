@@ -9,8 +9,11 @@ import Logo from '@static/images/logoNav.png';
 import { selectError, selectOrder } from './selectors';
 import { getOrder } from './actions';
 import { logoutUser } from '@containers/Client/actions';
+import { useNavigate } from 'react-router-dom';
+import { jwtDecode } from 'jwt-decode';
 
 const Order = ({ order, orderError }) => {
+  const Navigate = useNavigate();
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(getOrder());
@@ -48,6 +51,17 @@ const Order = ({ order, orderError }) => {
         return '';
     }
   }
+  const userData = localStorage.getItem('persist:client');
+  const parsedUserData = JSON.parse(userData);
+  const token = parsedUserData.token;
+  let decoded = null;
+  if (token) {
+    decoded = jwtDecode(token);
+    if (decoded.data.role === 1) {
+      Navigate('/');
+    }
+  }
+
   return (
     <div className={style.order}>
       <div className={style.product}>
@@ -64,7 +78,7 @@ const Order = ({ order, orderError }) => {
 
                     <div className={style.title}>
                       <div className={style.comp}>
-                        <p>Wartech</p>
+                        <p>Wartech {item.id}</p>
                       </div>
                       <div className={style.date}>
                         <p>{formatDateString(item.date)}</p>
@@ -81,7 +95,7 @@ const Order = ({ order, orderError }) => {
                       <p>Note: {item.note}</p>
                     </div>
                     <div className={getStatusClassName(item.status)}>
-                      <p>Status: {item.status}</p>
+                      <p>{item.status}</p>
                     </div>
                   </div>
                 </div>

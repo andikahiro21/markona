@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
@@ -16,11 +16,13 @@ import NightsStayIcon from '@mui/icons-material/NightsStay';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import Logout from '@mui/icons-material/Logout';
 import ReceiptIcon from '@mui/icons-material/Receipt';
+import AddIcon from '@mui/icons-material/Add';
 
 import { setLocale, setTheme } from '@containers/App/actions';
 
 import classes from './style.module.scss';
 import { setLogin, setToken } from '@containers/Client/actions';
+import { jwtDecode } from 'jwt-decode';
 
 const Navbar = ({ title, locale, theme }) => {
   const dispatch = useDispatch();
@@ -58,6 +60,12 @@ const Navbar = ({ title, locale, theme }) => {
   const handleOrder = () => {
     window.location.href = '/order';
   };
+  const handleCreate = () => {
+    window.location.href = '/create-menu';
+  };
+  const handleManage = () => {
+    window.location.href = '/manage-order';
+  };
 
   const onSelectLang = (lang) => {
     if (lang !== locale) {
@@ -72,6 +80,14 @@ const Navbar = ({ title, locale, theme }) => {
   const clientData = localStorage.getItem('persist:client');
   const parsedData = JSON.parse(clientData);
   const isProfileDataAvailable = parsedData && parsedData.token !== 'null';
+  const token = parsedData.token;
+  let decoded = null;
+
+  if (token && token.split('.').length === 3) {
+    decoded = jwtDecode(token);
+  }
+
+  console.log(decoded);
   return (
     <div className={classes.headerWrapper} data-testid="navbar">
       <div className={classes.contentWrapper}>
@@ -118,12 +134,30 @@ const Navbar = ({ title, locale, theme }) => {
                 transformOrigin={{ horizontal: 'right', vertical: 'top' }}
                 anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
               >
-                <MenuItem onClick={handleOrder}>
-                  <ListItemIcon>
-                    <ReceiptIcon fontSize="small" />
-                  </ListItemIcon>
-                  Order
-                </MenuItem>
+                {decoded?.data?.role === 2 && (
+                  <MenuItem onClick={handleOrder}>
+                    <ListItemIcon>
+                      <ReceiptIcon fontSize="small" />
+                    </ListItemIcon>
+                    Order
+                  </MenuItem>
+                )}
+                {decoded?.data?.role === 1 && (
+                  <>
+                    <MenuItem onClick={handleCreate}>
+                      <ListItemIcon>
+                        <AddIcon fontSize="small" />
+                      </ListItemIcon>
+                      Create Menu
+                    </MenuItem>
+                    <MenuItem onClick={handleManage}>
+                      <ListItemIcon>
+                        <ReceiptIcon fontSize="small" />
+                      </ListItemIcon>
+                      Manage Order
+                    </MenuItem>
+                  </>
+                )}
                 <MenuItem onClick={handleLogout}>
                   <ListItemIcon>
                     <Logout fontSize="small" />

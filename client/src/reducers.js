@@ -12,6 +12,9 @@ import forgotReducer from '@pages/ForgotPassword/reducer';
 import resetReducer from '@pages/ResetPassword/reducer';
 import homeReducer from '@pages/Home/reducer';
 import orderReducer from '@pages/Order/reducer';
+import manageOrderReducer from '@pages/ManageOrder/reducer';
+import editMenuReducer from '@pages/EditMenu/reducer';
+import createMenuReducer from '@pages/CreateMenu/reducer';
 
 const storedReducers = {
   app: { reducer: appReducer, whitelist: storedAppState },
@@ -27,6 +30,9 @@ const temporaryReducers = {
   resetPassword: resetReducer,
   home: homeReducer,
   order: orderReducer,
+  editMenu: editMenuReducer,
+  manageOrder: manageOrderReducer,
+  createMenu: createMenuReducer,
 };
 
 const createReducer = () => {

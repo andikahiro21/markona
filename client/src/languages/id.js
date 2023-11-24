@@ -33,4 +33,16 @@ export default {
   app_basket_title: 'Keranjang',
 
   app_order_title: 'Pesanan',
+
+  app_edit_title: 'Edit',
+  app_edit_name: 'Nama',
+  app_edit_category: 'Kategori',
+  app_edit_description: 'Deskripsi',
+  app_edit_type: 'Tipe',
+  app_edit_image: 'Gambar',
+  app_edit_price: 'Harga',
+  app_edit_button: 'Simpan',
+
+  app_create_title: 'Tambahkan Menu',
+  app_create_button: 'Tambah',
 };

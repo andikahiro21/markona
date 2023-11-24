@@ -40,17 +40,29 @@
       }
       .buttonContainer {
         @include directionX;
-
+        gap: 5px;
+        @include apply-at-xl-size {
+          gap: 10px;
+        }
         a {
-          color: $color-white;
-          text-decoration: none;
-          font-size: 18px;
+          @include apply-at-xs-size {
+            color: $color-white;
+            text-decoration: none;
+            font-size: 12px;
+          }
+          @include apply-at-xl-size {
+            font-size: 18px;
+          }
           .loginButton {
-            background-color: $color-dark-red;
-            padding: 5px 25px 5px 25px;
-            border-radius: 10px;
-            margin-right: 10px;
-            cursor: pointer;
+            @include apply-at-xs-size {
+              background-color: $color-dark-red;
+              padding: 5px 10px 5px 10px;
+              border-radius: 10px;
+              cursor: pointer;
+            }
+            @include apply-at-xl-size {
+              padding: 5px 25px 5px 25px;
+            }
           }
           .loginButton:hover {
             filter: brightness(120%);
@@ -58,14 +70,24 @@
         }
 
         a {
-          color: $color-white;
-          text-decoration: none;
-          font-size: 18px;
+          @include apply-at-xs-size {
+            color: $color-white;
+            text-decoration: none;
+            font-size: 12px;
+          }
+          @include apply-at-xl-size {
+            font-size: 18px;
+          }
           .registerButton {
-            background-color: $color-dark-red;
-            padding: 5px 15px 5px 15px;
-            border-radius: 10px;
-            cursor: pointer;
+            @include apply-at-xs-size {
+              background-color: $color-dark-red;
+              padding: 5px 10px 5px 10px;
+              border-radius: 10px;
+              cursor: pointer;
+            }
+            @include apply-at-xl-size {
+              padding: 5px 25px 5px 25px;
+            }
           }
           .registerButton:hover {
             filter: brightness(120%);

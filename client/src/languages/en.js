@@ -33,4 +33,16 @@ export default {
   app_basket_title: 'Basket',
 
   app_order_title: 'Order',
+
+  app_edit_title: 'Edit',
+  app_edit_name: 'Name',
+  app_edit_category: 'Category',
+  app_edit_description: 'Description',
+  app_edit_type: 'Type',
+  app_edit_image: 'Image',
+  app_edit_price: 'Price',
+  app_edit_button: 'Save',
+
+  app_create_title: 'Create Menu',
+  app_create_button: 'Create',
 };

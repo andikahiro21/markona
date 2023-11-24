@@ -1,5 +1,5 @@
 const { handleServerError, handleClientError } = require("../helpers/handleError");
-const { Menu } = require("../models");
+const { Menu, Purchase_Group } = require("../models");
 
 exports.disabledMenu = async (req, res) => {
   try {
@@ -45,6 +45,24 @@ exports.reactivatedMenu = async (req, res) => {
 
     res.status(200).json({ data: menuUpdated, message: "Menu successfully disabled." });
   } catch (error) {
+    return handleServerError(res);
+  }
+};
+exports.serveMenu = async (req, res) => {
+  try {
+    const { id } = req.body;
+
+    const purchase = await Purchase_Group.findOne({ where: { id } });
+    if (!purchase) {
+      return handleClientError(res, 404, `Purchase Group with ID ${id} not found.`);
+    }
+
+    await purchase.update({ status: "Pick Up" });
+    const purchaseGroupUpdated = await Purchase_Group.findOne({ where: { id } });
+
+    res.status(200).json({ data: purchaseGroupUpdated, message: "Menu successfully disabled." });
+  } catch (error) {
+    console.log(error);
     return handleServerError(res);
   }
 };

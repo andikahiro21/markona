@@ -64,8 +64,36 @@
         .actionCard {
           position: relative;
           width: 10%;
-          button {
+          .btnBasket {
             background-color: $color-black;
+            color: $color-white;
+            width: 30px;
+            height: 30px;
+            font-size: 24px;
+            border-radius: 50%;
+            outline: none;
+            border: none;
+            position: absolute;
+            bottom: 20px;
+            right: 30px;
+            cursor: pointer;
+          }
+          .btnEdit {
+            background-color: $color-yellow;
+            color: $color-white;
+            width: 30px;
+            height: 30px;
+            font-size: 24px;
+            border-radius: 50%;
+            outline: none;
+            border: none;
+            position: absolute;
+            bottom: 20px;
+            right: 80px;
+            cursor: pointer;
+          }
+          .btnDelete {
+            background-color: $color-dark-red;
             color: $color-white;
             width: 30px;
             height: 30px;

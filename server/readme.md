@@ -9,6 +9,7 @@ Authentication Project:
 - dotenv
 - multer
 - nodemailer
+- Midtrans
 
 ---
 

@@ -4,6 +4,8 @@ const joi = require("joi");
 const fs = require("fs");
 const path = require("path");
 const jwt = require("jsonwebtoken");
+const { Op } = require("sequelize");
+const { CLIENT_RENEG_LIMIT } = require("tls");
 
 exports.getMenu = async (req, res) => {
   try {
@@ -34,23 +36,34 @@ exports.getPurchaseMenu = async (req, res) => {
   }
 };
 
-exports.getPurchaseMenu = async (req, res) => {
+exports.getAllPurchaseMenu = async (req, res) => {
   try {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+
     const response = await Purchase_Group.findAll({
       include: [
         {
           model: Purchase,
         },
       ],
-      where: { userID: decoded.data.id },
+      where: {
+        status: "Order Receive",
+        date: {
+          [Op.gte]: today,
+          [Op.lt]: tomorrow,
+        },
+      },
     });
+
     res.status(200.0).json({ data: response, message: "Success" });
   } catch (error) {
     console.error(error);
     return handleServerError(res);
   }
 };
-
 exports.getMenubyID = async (req, res) => {
   try {
     const { id } = req.params;
@@ -115,14 +128,21 @@ exports.editMenu = async (req, res) => {
   try {
     const { id } = req.params;
     const updatedData = req.body;
-
+    if (req.file) {
+      const image = req.file.path.replace(/\\/g, "/");
+      updatedData.image = `http://localhost:3000/${image}`;
+    }
+    console.log(req.body, "<<<< BODY");
+    console.log(req.file, "<<<< IMAGE");
     updatedData.qty = 1;
+
     const scheme = joi.object({
       name: joi.string().required(),
       categoryID: joi.number().integer().required(),
       description: joi.string().allow(""),
       type: joi.string().required(),
-      image: joi.string().uri().allow(""),
+      // image: joi.string(),
+      image: joi.string().uri().required(),
       price: joi.number().integer().required(),
       qty: joi.number().integer().min(0).required(),
     });
@@ -158,6 +178,7 @@ exports.editMenu = async (req, res) => {
 
     res.status(200).json({ data: menuUpdated, message: "Menu updated successfully." });
   } catch (error) {
+    console.log(error, "<< ERR");
     if (req.file) {
       fs.unlinkSync(req.file.path);
     }

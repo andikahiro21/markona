@@ -69,7 +69,7 @@ exports.createPurchase = async (req, res) => {
       total: total,
       method: "Pending",
       status: "Pending",
-      date: addHoursToDate(new Date(nowDate), 7).toISOString(),
+      date: moment().tz("Asia/Jakarta").format("YYYY-MM-DD HH:mm:ss"),
     };
     let newPayment = await Payment.create(paymentData);
 
@@ -79,7 +79,7 @@ exports.createPurchase = async (req, res) => {
       username: decoded.data.fullName,
       note: newData.note,
       status: "Pending Payment",
-      date: addHoursToDate(new Date(nowDate), 7).toISOString(),
+      date: moment().tz("Asia/Jakarta").format("YYYY-MM-DD HH:mm:ss"),
     };
 
     const newPurchaseGroup = await Purchase_Group.create(purchaseGroupData);
@@ -158,7 +158,7 @@ exports.notificationMidtrans = async (req, res) => {
       transaction_status: "settlement",
       gross_amount: decoded.total,
       payment_type: "bank_transfer",
-      transaction_time: addHoursToDate(new Date(nowDate), 7).toISOString(),
+      transaction_time: moment().tz("Asia/Jakarta").format("YYYY-MM-DD HH:mm:ss"),
     };
 
     if (notification.transaction_status === "settlement") {

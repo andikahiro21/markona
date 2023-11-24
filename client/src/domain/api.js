@@ -35,3 +35,12 @@ export const getAllMenu = () => callAPI('/category/menu', 'GET', {}, {}, {});
 export const payment = (data) => callAPI('/payment', 'POST', {}, {}, data);
 export const notificationMidtrans = (token) => callAPI('/payment/midtrans-notification', 'POST', { token }, {}, {});
 export const getOrder = () => callAPI('/menu/purchase/order', 'GET', {}, {}, {});
+export const getManageOrder = () => callAPI('/menu/purchase/all-order', 'GET', {}, {}, {});
+export const serveMenu = (data) => callAPI('/admin/serve', 'POST', {}, {}, data);
+export const getMenuID = (data) => callAPI(`/menu/${data}`, 'GET', {}, {}, {});
+export const editMenu = (id, data) =>
+  callAPI(`/menu/${id}`, 'PUT', { 'Content-Type': 'multipart/form-data' }, {}, data);
+export const getCategory = (data) => callAPI(`/category`, 'GET', {}, {}, {});
+export const createMenu = (data) =>
+  callAPI(`/menu/create`, 'POST', { 'Content-Type': 'multipart/form-data' }, {}, data);
+export const deleteMenu = (data) => callAPI(`/menu/${data}`, 'DELETE', {}, {}, {});

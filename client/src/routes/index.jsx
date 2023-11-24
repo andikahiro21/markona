@@ -1,5 +1,7 @@
 import MainLayout from '@layouts/MainLayout';
 import Basket from '@pages/Basket';
+import CreateMenu from '@pages/CreateMenu';
+import EditMenu from '@pages/EditMenu';
 
 import ForgotPassword from '@pages/ForgotPassword';
 import Home from '@pages/Home';
@@ -65,6 +67,20 @@ const routes = [
     name: 'ManageOrder',
     protected: true,
     component: ManageOrder,
+    layout: MainLayout,
+  },
+  {
+    path: '/edit-menu/:id',
+    name: 'EditMenu',
+    protected: true,
+    component: EditMenu,
+    layout: MainLayout,
+  },
+  {
+    path: '/create-menu',
+    name: 'CreateMenu',
+    protected: true,
+    component: CreateMenu,
     layout: MainLayout,
   },
   { path: '*', name: 'Not Found', component: NotFound, layout: MainLayout, protected: false },
