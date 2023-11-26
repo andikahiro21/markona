@@ -63,7 +63,7 @@ const Home = ({ menus, baskets }) => {
   const parsedUserData = JSON.parse(userData);
   const token = parsedUserData.token;
   let decoded = null;
-  if (token) {
+  if (token && token.split('.').length === 3) {
     decoded = jwtDecode(token);
   }
   return (

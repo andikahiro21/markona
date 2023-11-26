@@ -132,8 +132,6 @@ exports.editMenu = async (req, res) => {
       const image = req.file.path.replace(/\\/g, "/");
       updatedData.image = `http://localhost:3000/${image}`;
     }
-    console.log(req.body, "<<<< BODY");
-    console.log(req.file, "<<<< IMAGE");
     updatedData.qty = 1;
 
     const scheme = joi.object({
@@ -141,7 +139,6 @@ exports.editMenu = async (req, res) => {
       categoryID: joi.number().integer().required(),
       description: joi.string().allow(""),
       type: joi.string().required(),
-      // image: joi.string(),
       image: joi.string().uri().required(),
       price: joi.number().integer().required(),
       qty: joi.number().integer().min(0).required(),
@@ -204,7 +201,7 @@ exports.deleteMenu = async (req, res) => {
 
     const purchase = await Purchase.findOne({ where: { menuID: id } });
     if (purchase) {
-      return handleClientError(res, 404, `Unable to delete the product due to its association with existing transaction data.`);
+      return handleClientError(res, 404, `Unable to delete the menu due to its association with existing purchase data.`);
     }
 
     await Menu.destroy({ where: { id: id } });

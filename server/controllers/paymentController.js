@@ -48,7 +48,7 @@ exports.createPurchase = async (req, res) => {
       }
 
       if (existingMenu.qty < 1) {
-        return handleClientError(res, 404, `${existingMenu.name} not available...`);
+        return handleClientError(res, 400, `${existingMenu.name} not available...`);
       }
     }
 
@@ -167,7 +167,6 @@ exports.notificationMidtrans = async (req, res) => {
 
       res.status(201).json({
         message: "Payment Success",
-        token: decoded,
       });
     } else {
       return handleClientError(res, 400, "Payment Unsuccessfully");

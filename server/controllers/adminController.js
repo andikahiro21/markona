@@ -43,7 +43,7 @@ exports.reactivatedMenu = async (req, res) => {
     await menu.update({ qty: qty });
     const menuUpdated = await Menu.findOne({ where: { id } });
 
-    res.status(200).json({ data: menuUpdated, message: "Menu successfully disabled." });
+    res.status(200).json({ data: menuUpdated, message: "Menu successfully enabled." });
   } catch (error) {
     return handleServerError(res);
   }
@@ -60,7 +60,7 @@ exports.serveMenu = async (req, res) => {
     await purchase.update({ status: "Pick Up" });
     const purchaseGroupUpdated = await Purchase_Group.findOne({ where: { id } });
 
-    res.status(200).json({ data: purchaseGroupUpdated, message: "Menu successfully disabled." });
+    res.status(200).json({ data: purchaseGroupUpdated, message: "Menu successfully serve." });
   } catch (error) {
     console.log(error);
     return handleServerError(res);

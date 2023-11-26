@@ -102,7 +102,7 @@ exports.deleteCategory = async (req, res) => {
     for (const menu of menus) {
       const purchase = await Purchase.findAll({ where: { menuID: menu.id } });
       if (purchase) {
-        return handleClientError(res, 404, `Unable to delete the product due to its association with existing transaction data. `);
+        return handleClientError(res, 400, `Unable to delete the category due to its association with existing menu data.`);
       }
     }
 

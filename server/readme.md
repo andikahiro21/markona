@@ -33,6 +33,14 @@ _Response (500 - Internal Server Error)_
 }
 ```
 
+_Response (403 - Not an Admin)_
+
+```
+{
+  "message": "Access Denied: Not an Admin"
+}
+```
+
 ---
 
 ## RESTful endpoints
@@ -186,7 +194,7 @@ _Response (404 - User Not Found)_
 
 ---
 
-### POST /reset-password/:id
+### POST /reset-password/:token
 
 > Reset Password API
 
@@ -229,15 +237,9 @@ _Response (400 - Validation Failed)_
 
 ---
 
-### GET /brand
+### GET /category
 
-> Get all brands include phones
-
-_Request Authorization_
-
-```
-<bearer_token>
-```
+> Get all category
 
 _Request Header_
 
@@ -265,20 +267,44 @@ _Response (200)_
 
 ---
 
-### GET /brand/:id
+### GET /category/menu
 
-> Get brand by ID include phones
+> Get all category include menu
 
-_Request Authorization_
+_Request Header_
 
 ```
-<bearer_token>
+not needed
 ```
+
+_Request Body_
+
+```
+not needed
+```
+
+_Response (200)_
+
+```
+{
+
+    "data": [<data_spesific>],
+
+    "status": "Success"
+
+}
+```
+
+---
+
+### GET /category/menu/:id
+
+> Get all category include menu by id
 
 _Request Params_
 
 ```
-/<id>
+<id>
 ```
 
 _Request Header_
@@ -298,7 +324,7 @@ _Response (200)_
 ```
 {
 
-    "data": {<data_spesific>}
+    "data": [<data_spesific>],
 
     "status": "Success"
 
@@ -309,20 +335,20 @@ _Response (404 - Data Not Found)_
 
 ```
 {
-    "message": "Brand Not Found..."
+    "message": "Category Not Found..."
 }
 ```
 
 ---
 
-### POST /brand/create
+### POST /category/create
 
-> Create Brand
+> Create category
 
 _Request Authorization_
 
 ```
-<bearer_token>
+<bearer_token_admin>
 ```
 
 _Request Header_
@@ -344,7 +370,7 @@ _Response (201)_
 ```
 {
     "data": {<data_specific>},
-    "message": "Brand Created..."
+    "message": "Category Created..."
 }
 ```
 
@@ -360,20 +386,26 @@ _Response (400 - Name Already Exist)_
 
 ```
 {
-    "message": "Brand with name <name> already exist..."
+    "message": "Category with name <name> already exist..."
 }
 ```
 
 ---
 
-### PUT /brand/:id
+### PUT /category/:id
 
-> Edit Brand
+> Edit Category
 
 _Request Params_
 
 ```
 /<id>
+```
+
+_Request Authorization_
+
+```
+<bearer_token_admin>
 ```
 
 _Request Header_
@@ -394,7 +426,7 @@ _Response (200)_
 
 ```
 {
-    "message": "Brand Updated..."
+    "message": "Category Updated..."
 }
 ```
 
@@ -410,20 +442,26 @@ _Response (404 - Error Not Found)_
 
 ```
 {
-    "message": "Brand Not Found"
+    "message": "Category Not Found"
 }
 ```
 
 ---
 
-### DELETE /brand/:id
+### DELETE /category/:id
 
-> Delete Brand by id
+> Delete category by id
 
 _Request Params_
 
 ```
 /<id>
+```
+
+_Request Authorization_
+
+```
+<bearer_token_admin>
 ```
 
 _Request Header_
@@ -442,7 +480,7 @@ _Response (200)_
 
 ```
 {
-    "message": "Brand have been deleted"
+    "message": "Category have been deleted"
 }
 ```
 
@@ -450,15 +488,53 @@ _Response (404 - Error Not Found)_
 
 ```
 {
-    "message": "Brand Not Found"
+    "message": "Category Not Found"
+}
+```
+
+_Response (400 - Unable to delete category)_
+
+```
+{
+    "message": "Unable to delete the category due to its association with existing menu data."
 }
 ```
 
 ---
 
-### GET /phone
+### GET /menu
 
-> Get all phone
+> Get all menu
+
+_Request Header_
+
+```
+not needed
+```
+
+_Request Body_
+
+```
+not needed
+```
+
+_Response (200)_
+
+```
+{
+
+    "data": [<data_spesific>],
+
+    "status": "Success"
+
+}
+```
+
+---
+
+### GET /menu/purchase/order
+
+> Get all purchase group include purchase by id user
 
 _Request Authorization_
 
@@ -492,20 +568,14 @@ _Response (200)_
 
 ---
 
-### GET /phone/:id
+### GET /menu/:id
 
-> Get specific phone
-
-_Request Authorization_
-
-```
-<bearer_token>
-```
+> Get all menu by id
 
 _Request Params_
 
 ```
-/<id>
+<id>
 ```
 
 _Request Header_
@@ -525,7 +595,7 @@ _Response (200)_
 ```
 {
 
-    "data": {<data_spesific>}
+    "data": [<data_spesific>],
 
     "status": "Success"
 
@@ -536,70 +606,20 @@ _Response (404 - Data Not Found)_
 
 ```
 {
-    "message": "Phone Not Found..."
+    "message": "Menu Not Found..."
 }
 ```
 
 ---
 
-### GET /phone/brand/:id
+### POST /menu/create
 
-> Get phone group with brand id
-
-_Request Authorization_
-
-```
-<bearer_token>
-```
-
-_Request Params_
-
-```
-/<id>
-```
-
-_Request Header_
-
-```
-not needed
-```
-
-_Request Body_
-
-```
-not needed
-```
-
-_Response (200)_
-
-```
-{
-
-    "data": [<data_spesific>]
-
-    "status": "Success"
-
-}
-```
-
-_Response (404 - Data Not Found)_
-
-```
-{
-    "message": "Brand Not Found..."
-}
-```
-
----
-
-### POST /phone/create
-
-> Create phone
+> Create Menu
 
 _Request Authorization_
 
 ```
-<bearer_token>
+<bearer_token_admin>
 ```
 
 _Request Header_
@@ -613,11 +633,11 @@ _Request Body_
 ```
 {
         "name": "<name>",
-        "brandID": <brandID>,
-        "spesification": "<spesification>",
-        "image": <upload_image>,
+        "categoryID": <categoryID>,
+        "description": "<description>",
+        "type": <type>,
         "price": <price>,
-        "quantity": <quantity>,
+        "image": <upload_image>,
 }
 ```
 
@@ -626,7 +646,7 @@ _Response (201)_
 ```
 {
     "data": {<data_specific>},
-    "message": "Phone Created..."
+    "message": "Menui Created..."
 }
 ```
 
@@ -642,20 +662,26 @@ _Response (400 - Name Already Exist)_
 
 ```
 {
-    "message": "Phone with name <name> already exist..."
+    "message": "Menu with name <name> already exist..."
 }
 ```
 
 ---
 
-### PUT /phone/:id
+### PUT /menu/:id
 
-> Edit Phone
+> Edit Menu
 
 _Request Params_
 
 ```
 /<id>
+```
+
+_Request Authorization_
+
+```
+<bearer_token_admin>
 ```
 
 _Request Header_
@@ -669,11 +695,11 @@ _Request Body_
 ```
 {
         "name": "<name>",
-        "brandID": <brandID>,
-        "spesification": "<spesification>",
-        "image": <upload_image>,
+        "categoryID": <categoryID>,
+        "description": "<description>",
+        "type": <type>,
         "price": <price>,
-        "quantity": <quantity>,
+        "image": <upload_image>,
 }
 ```
 
@@ -681,7 +707,7 @@ _Response (200)_
 
 ```
 {
-    "message": "Phone updated successfully."
+    "message": "Menu updated successfully."
 }
 ```
 
@@ -697,20 +723,26 @@ _Response (404 - Error Not Found)_
 
 ```
 {
-    "message": "Phone with ID <id> not found."
+    "message": "Menu with ID <id> not found."
 }
 ```
 
 ---
 
-### DELETE /phone/:id
+### DELETE /menu/:id
 
-> Delete Phone by id
+> Delete menu by id
 
 _Request Params_
 
 ```
 /<id>
+```
+
+_Request Authorization_
+
+```
+<bearer_token_admin>
 ```
 
 _Request Header_
@@ -729,7 +761,7 @@ _Response (200)_
 
 ```
 {
-    "message": "Phone have been deleted"
+    "message": "Menu have been deleted"
 }
 ```
 
@@ -737,20 +769,248 @@ _Response (404 - Error Not Found)_
 
 ```
 {
-    "message": "Phone Not Found"
+    "message": "Menu Not Found"
+}
+```
+
+_Response (400 - Unable to delete category)_
+
+```
+{
+    "message": "Unable to delete the menu due to its association with existing purchase data."
 }
 ```
 
 ---
 
-### GET /transaction
+### POST /payment
 
-> Get transaction group by id user token
+> Create payment data
 
 _Request Authorization_
 
 ```
 <bearer_token>
+```
+
+_Request Header_
+
+```
+not needed
+```
+
+_Request Body_
+
+```
+{
+    "items":[
+        "menuIDs": [<menuIDs>]
+        "qtys": [<qtys>]
+        "note": "<note>"
+    ]
+}
+```
+
+_Response (201)_
+
+```
+{
+    "message": "Request for Payment"
+    "paymentUrl": <paymentUrl>,
+    "token": <dataToken>,
+}
+```
+
+_Response (400 - Validation Failed)_
+
+```
+{
+    "message": "\"menuIDs\" is not allowed to be empty"
+}
+```
+
+_Response (400 - Menu IDs and Quantitie doesn't have the same length)_
+
+```
+{
+    "message": "Menu IDs and quantities must have the same number of elements."
+}
+```
+
+_Response (404 - Error not found)_
+
+```
+{
+    "message": "Menu not found..."
+}
+```
+
+_Response (400 - Menu disable)_
+
+```
+{
+    "message": "<menu_name> not available..."
+}
+```
+
+---
+
+### POST /payment/midtrans-notification
+
+> Payment handler
+
+_Request Authorization_
+
+```
+<bearer_token>
+```
+
+_Request Header_
+
+```
+<token>
+```
+
+_Request Body_
+
+```
+not needed
+```
+
+_Response (201)_
+
+```
+{
+    "message": "Payment Success"
+}
+```
+
+_Response (400 - Payment Failed)_
+
+```
+{
+    "message": "Payment Unsuccessfully"
+}
+```
+
+---
+
+### POST /admin/enable-menu/:id
+
+> Activated menu
+
+_Request Params_
+
+```
+/<id>
+```
+
+_Request Authorization_
+
+```
+<bearer_token_admin>
+```
+
+_Request Header_
+
+```
+not needed
+```
+
+_Request Body_
+
+```
+not needed
+```
+
+_Response (201)_
+
+```
+{
+    "message": "Menu successfully enabled."
+}
+```
+
+_Response (404 - Data not found)_
+
+```
+{
+    "message": "Menu with ID <menu_id> not found."
+}
+```
+
+_Response (400 - Data not found)_
+
+```
+{
+    "message": "Menu with name <menu_name> already active"
+}
+```
+
+---
+
+### POST /admin/disable-menu/1
+
+> Disabled menu
+
+_Request Params_
+
+```
+/<id>
+```
+
+_Request Authorization_
+
+```
+<bearer_token_admin>
+```
+
+_Request Header_
+
+```
+not needed
+```
+
+_Request Body_
+
+```
+not needed
+```
+
+_Response (201)_
+
+```
+{
+    "message": "Menu successfully disabled."
+}
+```
+
+_Response (404 - Data not found)_
+
+```
+{
+    "message": "Menu with ID <menu_id> not found."
+}
+```
+
+_Response (400 - Data not found)_
+
+```
+{
+    "message": "Menu with name <menu_name> already disabled"
+}
+```
+
+---
+
+### GET /menu/purchase/all-order
+
+> Get all menu by id
+
+_Request Authorization_
+
+```
+<bearer_token_admin>
 ```
 
 _Request Header_
@@ -779,14 +1039,14 @@ _Response (200)_
 
 ---
 
-### POST /transaction/create
+### POST /admin/serve
 
-> Create transaction
+> Server menu, change status to pick up
 
 _Request Authorization_
 
 ```
-<bearer_token>
+<bearer_token_admin>
 ```
 
 _Request Header_
@@ -798,49 +1058,22 @@ not needed
 _Request Body_
 
 ```
-{
-        "phoneIDs": <phoneIDs>,
-        "qtys": <qtys>,
-}
+"id": <id>
 ```
 
 _Response (201)_
 
 ```
 {
-    "message": "Transaction created successfully."
+    "message": "Menu successfully serve."
 }
 ```
 
-_Response (400 - Validation Failed)_
+_Response (404 - Data not found)_
 
 ```
 {
-    "message": "\"phoneIDs\" is not allowed to be empty"
-}
-```
-
-_Response (400 - Some phone don't have qty to make transaction)_
-
-```
-{
-    "message": "Phone IDs and quantities must have the same number of elements.."
-}
-```
-
-_Response (404 - Phone id not found)_
-
-```
-{
-    "message": "Phone not found..."
-}
-```
-
-_Response (404 - Phone don't have any quantity)_
-
-```
-{
-    "message": "<phone_name> sold out..."
+    "message": "Purchase Group with ID <PurchaseGroup_id> not found."
 }
 ```
 
