@@ -1,16 +1,9 @@
-const express = require("express");
-const userRoute = require("./userRoute");
-const adminRoute = require("./adminRoute");
-const categoryRoute = require("./categoryRoute");
-const menuRoute = require("./menuRoute");
-const paymentRoute = require("./paymentRoute");
+const express = require('express');
+
+const scriptRoute = require('./scriptRoutes');
 
 const router = express.Router();
 
-router.use("/", userRoute);
-router.use("/admin", adminRoute);
-router.use("/category", categoryRoute);
-router.use("/menu", menuRoute);
-router.use("/payment", paymentRoute);
+router.use('/script', scriptRoute);
 
 module.exports = router;

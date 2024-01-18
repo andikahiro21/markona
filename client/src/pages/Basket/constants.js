@@ -1,4 +1,0 @@
-export const SET_BASKET = 'SET_BASKET';
-export const SET_PAYMENT_REQUEST = 'SET_PAYMENT_REQUEST';
-export const PAYMENT_SUCCESS = 'PAYMENT_SUCCESS';
-export const ERROR = 'ERROR';

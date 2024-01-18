@@ -1,2 +1,0 @@
-export const RESET_REQUEST = 'RESET_REQUEST';
-export const RESET_FAILURE = 'RESET_FAILURE';
