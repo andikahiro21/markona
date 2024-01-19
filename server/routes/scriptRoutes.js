@@ -3,16 +3,17 @@ const router = express.Router();
 
 const upload = require('../middleware/storage');
 const {
-  getMenubyID,
   getScripts,
   createScript,
-  editScript
+  editScript,
+  deleteScripts,
+  getScriptbyID
 } = require('../controllers/scriptController');
 
 router.get('/', getScripts);
-// router.get('/:id', getMenubyID);
+router.get('/:id', getScriptbyID);
 router.post('/create', upload.single('file'), createScript);
 router.put('/:id', upload.single('file'), editScript);
-// router.put('/:delete', deleteMenu);
+router.delete('/delete', deleteScripts);
 
 module.exports = router;

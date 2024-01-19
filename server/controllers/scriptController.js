@@ -18,20 +18,20 @@ exports.getScripts = async (req, res) => {
     return handleServerError(res);
   }
 };
-// exports.getMenubyID = async (req, res) => {
-//   try {
-//     const { id } = req.params;
-//     const response = await Menu.findOne({
-//       where: { id: id }
-//     });
-//     if (!response) {
-//       return handleClientError(res, 404, `Menu Not Found...`);
-//     }
-//     res.status(200).json({ data: response, message: 'Success' });
-//   } catch (error) {
-//     return handleServerError(res);
-//   }
-// };
+exports.getScriptbyID = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const response = await Scripts.findOne({
+      where: { id: id }
+    });
+    if (!response) {
+      return handleClientError(res, 404, `Scripts Not Found...`);
+    }
+    res.status(200).json({ data: response, message: 'Success' });
+  } catch (error) {
+    return handleServerError(res);
+  }
+};
 
 exports.createScript = async (req, res) => {
   try {
@@ -134,40 +134,62 @@ exports.editScript = async (req, res) => {
   }
 };
 
-exports.deleteMenu = async (req, res) => {
+exports.deleteScripts = async (req, res) => {
   try {
-    const { id } = req.params;
-    const selectedMenu = await Menu.findOne({ where: { id: id } });
+    const { ids } = req.body;
 
-    if (!selectedMenu) {
-      return res.status(404).json({ message: `Menu Not Found` });
-    }
-
-    if (selectedMenu.image) {
-      const imagePath = path.join(
-        __dirname,
-        '..',
-        'uploads',
-        selectedMenu.image.split('/').pop()
+    if (!ids || !Array.isArray(ids) || ids.length === 0) {
+      return handleClientError(
+        res,
+        400,
+        'Invalid or missing IDs in the request body.'
       );
-      if (fs.existsSync(imagePath)) {
-        fs.unlinkSync(imagePath);
-      }
     }
 
-    const purchase = await Purchase.findOne({ where: { menuID: id } });
-    if (purchase) {
+    const scripts = await Scripts.findAll({
+      where: { id: ids },
+      attributes: ['id'],
+      raw: true
+    });
+
+    const foundIds = scripts.map((script) => script.id);
+    const missingIds = ids.filter((id) => !foundIds.includes(id));
+
+    if (missingIds.length > 0) {
       return handleClientError(
         res,
         404,
-        `Unable to delete the menu due to its association with existing purchase data.`
+        `Script(s) with ID(s) ${missingIds.join(', ')} not found.`
       );
     }
 
-    await Menu.destroy({ where: { id: id } });
+    // Melakukan penghapusan setelah memastikan semua IDs valid
+    const deletedScripts = await Promise.all(
+      ids.map(async (id) => {
+        const script = await Scripts.findOne({ where: { id } });
 
-    res.status(200).json({ message: 'Menu have been deleted' });
+        if (script.path) {
+          const filePath = path.join(
+            __dirname,
+            '..',
+            'uploads',
+            script.path.split('/').pop()
+          );
+          if (fs.existsSync(filePath)) {
+            fs.unlinkSync(filePath);
+          }
+        }
+
+        await script.destroy();
+        return { id, success: true, message: `Script with ID ${id} deleted.` };
+      })
+    );
+
+    res
+      .status(200)
+      .json({ deletedScripts, message: 'Scripts deleted successfully.' });
   } catch (error) {
+    console.error(error);
     return handleServerError(res);
   }
 };
