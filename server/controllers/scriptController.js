@@ -5,8 +5,10 @@ const {
 const { Scripts } = require('../models');
 const fs = require('fs');
 const path = require('path');
-const { Op } = require('sequelize');
-const { CLIENT_RENEG_LIMIT } = require('tls');
+const {
+  validateBodyScript,
+  validateBodyEditScript
+} = require('../helpers/validationJoi');
 
 exports.getScripts = async (req, res) => {
   try {
@@ -16,111 +18,58 @@ exports.getScripts = async (req, res) => {
     return handleServerError(res);
   }
 };
+// exports.getMenubyID = async (req, res) => {
+//   try {
+//     const { id } = req.params;
+//     const response = await Menu.findOne({
+//       where: { id: id }
+//     });
+//     if (!response) {
+//       return handleClientError(res, 404, `Menu Not Found...`);
+//     }
+//     res.status(200).json({ data: response, message: 'Success' });
+//   } catch (error) {
+//     return handleServerError(res);
+//   }
+// };
 
-exports.getPurchaseMenu = async (req, res) => {
-  try {
-    const token = req.headers.authorization.split(' ')[1];
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
-    const response = await Purchase_Group.findAll({
-      include: [
-        {
-          model: Purchase
-        }
-      ],
-      where: { userID: decoded.data.id }
-    });
-    res.status(200.0).json({ data: response, message: 'Success' });
-  } catch (error) {
-    console.error(error);
-    return handleServerError(res);
-  }
-};
-
-exports.getAllPurchaseMenu = async (req, res) => {
-  try {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const tomorrow = new Date(today);
-    tomorrow.setDate(tomorrow.getDate() + 1);
-
-    const response = await Purchase_Group.findAll({
-      include: [
-        {
-          model: Purchase
-        }
-      ],
-      where: {
-        status: 'Order Receive',
-        date: {
-          [Op.gte]: today,
-          [Op.lt]: tomorrow
-        }
-      }
-    });
-
-    res.status(200.0).json({ data: response, message: 'Success' });
-  } catch (error) {
-    console.error(error);
-    return handleServerError(res);
-  }
-};
-exports.getMenubyID = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const response = await Menu.findOne({
-      where: { id: id }
-    });
-    if (!response) {
-      return handleClientError(res, 404, `Menu Not Found...`);
-    }
-    res.status(200).json({ data: response, message: 'Success' });
-  } catch (error) {
-    return handleServerError(res);
-  }
-};
-
-exports.createMenu = async (req, res) => {
+exports.createScript = async (req, res) => {
   try {
     const newData = req.body;
+
+    if (!req.file) {
+      return handleClientError(res, 400, 'File Required');
+    }
+
+    const validate = validateBodyScript(newData);
+    if (validate) {
+      if (req.file) {
+        fs.unlinkSync(req.file.path);
+      }
+      return handleClientError(res, 400, validate);
+    }
+
     if (req.file) {
-      const imagePath = req.file.path.replace(/\\/g, '/');
-      newData.image = `http://localhost:3000/${imagePath}`;
+      const filePath = req.file.path.replace(/\\/g, '/');
+      const fileName = filePath.replace(/^uploads\//, '').replace(/\.pdf$/, '');
+      newData.path = `http://localhost:2025/${filePath}`;
+      newData.file_name = fileName;
     }
-    newData.qty = 1;
-    const scheme = joi.object({
-      name: joi.string().required(),
-      categoryID: joi.number().integer().required(),
-      description: joi.string().allow(''),
-      type: joi.string().required(),
-      image: joi.string().uri().required(),
-      price: joi.number().integer().required(),
-      qty: joi.number().integer().min(0).required()
+
+    const existingScript = await Scripts.findOne({
+      where: { file_name: newData.file_name }
     });
-
-    const { error } = scheme.validate(newData);
-    if (error) {
-      if (req.file) {
-        fs.unlinkSync(req.file.path);
-      }
-      return handleClientError(res, 400, error.details[0].message);
-    }
-
-    const existingMenu = await Menu.findOne({ where: { name: newData.name } });
-    if (existingMenu) {
-      if (req.file) {
-        fs.unlinkSync(req.file.path);
-      }
+    if (existingScript) {
       return handleClientError(
         res,
         400,
-        `Menu with name ${newData.name} already exist...`
+        `File Name ${newData.file_name} already exists...`
       );
     }
 
-    const newMenu = await Menu.create(newData);
+    const newScript = await Scripts.create(newData);
 
-    res.status(201).json({ data: newMenu, message: 'Menu Created...' });
+    res.status(201).json({ data: newScript, message: 'Script Created...' });
   } catch (error) {
     if (req.file) {
       fs.unlinkSync(req.file.path);
@@ -129,65 +78,55 @@ exports.createMenu = async (req, res) => {
   }
 };
 
-exports.editMenu = async (req, res) => {
+exports.editScript = async (req, res) => {
   try {
     const { id } = req.params;
     const updatedData = req.body;
-    if (req.file) {
-      const image = req.file.path.replace(/\\/g, '/');
-      updatedData.image = `http://localhost:3000/${image}`;
-    }
-    updatedData.qty = 1;
 
-    const scheme = joi.object({
-      name: joi.string().required(),
-      categoryID: joi.number().integer().required(),
-      description: joi.string().allow(''),
-      type: joi.string().required(),
-      image: joi.string().uri().required(),
-      price: joi.number().integer().required(),
-      qty: joi.number().integer().min(0).required()
-    });
-
-    const { error } = scheme.validate(updatedData);
-    if (error) {
+    const validate = validateBodyEditScript(updatedData);
+    if (validate) {
       if (req.file) {
         fs.unlinkSync(req.file.path);
       }
-      return handleClientError(res, 400, error.details[0].message);
+      return handleClientError(res, 400, validate);
     }
 
-    const menu = await Menu.findOne({ where: { id } });
+    const script = await Scripts.findOne({ where: { id } });
 
-    if (!menu) {
+    if (!script) {
       if (req.file) {
         fs.unlinkSync(req.file.path);
       }
-      return handleClientError(res, 404, `Menu with ID ${id} not found.`);
+      return handleClientError(res, 404, `Script with ID ${id} not found.`);
     }
 
     if (req.file) {
-      const imagePath = req.file.path.replace(/\\/g, '/');
-      updatedData.image = `http://localhost:3000/${imagePath}`;
-      if (menu.image) {
-        const oldImagePath = path.join(
+      const filePath = req.file.path.replace(/\\/g, '/');
+      updatedData.path = `http://localhost:2025/${filePath}`;
+      if (script.path) {
+        const oldPath = path.join(
           __dirname,
           '..',
           'uploads',
-          menu.image.split('/').pop()
+          script.path.split('/').pop()
         );
-        fs.unlinkSync(oldImagePath);
+        fs.unlinkSync(oldPath);
+        const fileName = filePath
+          .replace(/^uploads\//, '')
+          .replace(/\.pdf$/, '');
+
+        updatedData.file_name = fileName;
       }
     }
 
-    await menu.update(updatedData);
-    const menuUpdated = await Menu.findOne({ where: { id } });
+    await script.update(updatedData);
+    const scriptUpdated = await Scripts.findOne({ where: { id } });
 
     res
       .status(200)
-      .json({ data: menuUpdated, message: 'Menu updated successfully.' });
+      .json({ data: scriptUpdated, message: 'Script updated successfully.' });
   } catch (error) {
-    console.log(error, '<< ERR');
+    console.log(error);
     if (req.file) {
       fs.unlinkSync(req.file.path);
     }
@@ -229,7 +168,6 @@ exports.deleteMenu = async (req, res) => {
 
     res.status(200).json({ message: 'Menu have been deleted' });
   } catch (error) {
-    console.log(error);
     return handleServerError(res);
   }
 };

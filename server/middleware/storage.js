@@ -1,4 +1,3 @@
-const { log } = require('console');
 const multer = require('multer');
 const path = require('path');
 
@@ -7,18 +6,18 @@ const storage = multer.diskStorage({
     cb(null, 'uploads/');
   },
   filename: function (req, file, cb) {
-    cb(
-      null,
-      file.fieldname + '-' + Date.now() + path.extname(file.originalname)
-    );
+    const fileName = req.body.file_name.replace(/\s+/g, '_').endsWith('.pdf')
+      ? req.body.file_name.replace(/\s+/g, '_') + '-' + Date.now()
+      : req.body.file_name.replace(/\s+/g, '_') + '-' + Date.now() + '.pdf';
+    cb(null, fileName);
   }
 });
 
 const fileFilter = (req, file, cb) => {
-  if (file.mimetype.startsWith('image/')) {
+  if (file.mimetype === 'application/pdf') {
     cb(null, true);
   } else {
-    cb(new Error('Please upload only images.'), false);
+    cb(new Error('Please upload only PDF files.'), false);
   }
 };
 
